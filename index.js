@@ -128,7 +128,7 @@ MyGardenaSmart.prototype = {
   getDevicesMowerId: async function () {
     if (!this.mowerId) {
       this.log('getDevicesMowerId', 'set mowerId');
-      const query = 'devices[category=mower].id';
+      const query = 'devices.id';
       const mowerId = await this.queryDevices(query);
       this.log('getDevicesMowerId', {mowerId});
       this.mowerId = mowerId;
@@ -142,12 +142,21 @@ MyGardenaSmart.prototype = {
   // },
 
   getDevicesMowerStatus: async function () {
-    const query = 'devices[category=mower].abilities[type=robotic_mower][properties][name=status].value';
+    //const query = 'devices[category=mower].abilities[type=robotic_mower][properties][name=status].value';
+    const query = 'devices[category=sensor].abilities[type=device_info][properties][name=connection_status].value';
+    //query2 = 'devices[category=sensor]';
+    //this.log("sensor device:", this.queryDevices(query));
     return await this.queryDevices(query);
   },
 
+  getDevicesSensorStatus: async function () {
+    const query = 'devices[category=sensor].abilities[type=robotic_mower][properties][name=status].value';
+    return await this.queryDevices(query);
+  },
+
+
   getDevicesSensorHumidity: async function () {
-    const query = 'devices[category=sensor].abilities[type=sensor][properties][name=soilHumidity].value';
+    const query = 'devices[category=sensor].abilities[type=soil_humidity_sensor][properties][name=humidity].value';
     return await this.queryDevices(query);
   },
 
@@ -157,21 +166,18 @@ MyGardenaSmart.prototype = {
   // },
 
   getDevicesBatteryLevel: async function () {
-    const query = 'devices[category=mower].abilities[type=battery_power].properties[name=level].value';
+    const query = 'devices[category=sensor].abilities[type=battery_power].properties[name=level].value';
     return await this.queryDevices(query);
   },
 
   getDevicesBatteryCharging: async function () {
-    const query = 'devices[category=mower].abilities[type=battery_power].properties[name=charging].value';
+    const query = 'devices[category=sensor].abilities[type=battery_power].properties[name=disposable_battery_status].value';
     return await this.queryDevices(query);
   },
 
   queryDevices: async function (query) {
     const data = await this.getDevices();
-    this.log('queryDevices', {data[0]});
-    this.log('queryDevices', {data[1]});
-    this.log('queryDevices', {data[2]});
-
+    this.log("jsondata", JSON.stringify(data));
     const result = jq(query, {data});
     this.log('queryDevices', {data, query, result});
     return result ? result.value : null;
@@ -234,6 +240,13 @@ MyGardenaSmart.prototype = {
     // this.log('getBatteryLevelCharacteristic', {value});
     next(null, value);
   },
+
+  getSensorHumidityCharacteristic: async function (next) {
+    const value = await this.getDevicesSensorHumidity
+    // this.log('getBatteryLevelCharacteristic', {value});
+    next(null, value);
+  },
+
 
   getChargingStateCharacteristic: async function (next) {
     const value = await this.getDevicesBatteryCharging();
@@ -330,13 +343,13 @@ MyGardenaSmart.prototype = {
     this.services.push(batteryService);
 
     /* Humidity Service */
-    /*
-        let humidityService = new Service.HumiditySensor('Battery');
-        humidityService
-          .getCharacteristic(Characteristic.CurrentRelativeHumidity)
-          .on('get', this.getBatteryLevelCharacteristic.bind(this));
-        this.services.push(humidityService);
-    */
+    
+    let humidityService = new Service.HumiditySensor('Bodenfeuchtigkeit');
+    humidityService
+      .getCharacteristic(Characteristic.CurrentRelativeHumidity)
+      .on('get', this.getSensorHumidityCharacteristic.bind(this));
+    this.services.push(humidityService);
+    
     /* Switch Service */
 
     /*
@@ -350,7 +363,7 @@ MyGardenaSmart.prototype = {
 
     /* Fan Service */
 
-    let fanService = new Service.Fan('Mowing');
+    let fanService = new Service.Fan('Sensor');
     fanService
       .getCharacteristic(Characteristic.On)
       .on('get', this.getMowerOnCharacteristic.bind(this))
