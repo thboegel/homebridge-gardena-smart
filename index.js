@@ -361,7 +361,7 @@ MyGardenaSmart.prototype = {
     this.services.push(switchService);
     */
 
-    /* Fan Service */
+    /* Fan Service 
 
     let fanService = new Service.Fan('Sensor');
     fanService
@@ -372,6 +372,7 @@ MyGardenaSmart.prototype = {
 
     return this.services;
   },
+  */
   /*
     getSwitchOnCharacteristic: function (next) {
       const me = this;
