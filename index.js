@@ -8,10 +8,11 @@ let Service, Characteristic;
 module.exports = function (homebridge) {
   Service = homebridge.hap.Service;
   Characteristic = homebridge.hap.Characteristic;
-  homebridge.registerAccessory("homebridge-gardena-mower", "gardena-mower", MyRobo);
+  FakeGatoHistoryService = require("fakegato-history")(homebridge);
+  homebridge.registerAccessory("homebridge-gardena-smart", "gardena-smart", MyGardenaSmart);
 };
 
-function MyRobo(log, config) {
+function MyGardenaSmart(log, config) {
   this.log = log;
   this.username = config['username'];
   this.password = config['password'];
@@ -27,7 +28,7 @@ function MyRobo(log, config) {
   this.getLocationsLocationId();
 }
 
-MyRobo.prototype = {
+MyGardenaSmart.prototype = {
 
   getToken: function () {
     const me = this;
@@ -145,6 +146,11 @@ MyRobo.prototype = {
     return await this.queryDevices(query);
   },
 
+  getDevicesSensorHumidity: async function () {
+    const query = 'devices[category=sensor].abilities[type=sensor][properties][name=soilHumidity].value';
+    return await this.queryDevices(query);
+  },
+
   // getDevicesBatteryProperties: async function () {
   //   const query = 'devices[category=mower].abilities[type=battery_power].properties[name=level].value';
   //   return await this.queryDevices(query);
@@ -162,8 +168,12 @@ MyRobo.prototype = {
 
   queryDevices: async function (query) {
     const data = await this.getDevices();
+    this.log('queryDevices', {data[0]});
+    this.log('queryDevices', {data[1]});
+    this.log('queryDevices', {data[2]});
+
     const result = jq(query, {data});
-    // this.log('queryDevices', {data, query, result});
+    this.log('queryDevices', {data, query, result});
     return result ? result.value : null;
   },
 
