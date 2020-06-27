@@ -369,10 +369,10 @@ MyGardenaSmart.prototype = {
       .on('get', this.getMowerOnCharacteristic.bind(this))
       .on('set', this.setMowerOnCharacteristic.bind(this));
     this.services.push(fanService);
-
+*/
     return this.services;
   },
-  */
+  
   /*
     getSwitchOnCharacteristic: function (next) {
       const me = this;
