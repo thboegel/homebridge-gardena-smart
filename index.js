@@ -161,7 +161,7 @@ MyGardenaSmart.prototype = {
   },
 
   getDevicesSensorTemperature: async function () {
-    const query = 'devices[category=sensor].abilities[type=soil_temperature][properties][name=temperature].value';
+    const query = 'devices[category=sensor].abilities[type=soil_temperature_sensor][properties][name=temperature].value';
     return await this.queryDevices(query);
   },
 
@@ -241,7 +241,7 @@ MyGardenaSmart.prototype = {
 
   getDevicesSensorStatusCharacteristic: async function (next) {
     const status = await this.getDevicesSensorStatus();
-    statusBool = ['good'].includes(status);
+    statusBool = ['online'].includes(status);
 
     const sensorStatus = statusBool ? 1 : 0;
     next(null, sensorStatus);
@@ -382,6 +382,8 @@ MyGardenaSmart.prototype = {
     humidityService
       .getCharacteristic(Characteristic.CurrentRelativeHumidity)
       .on('get', this.getSensorHumidityCharacteristic.bind(this));
+    humidityService.getCharacteristic(Characteristic.StatusActive)
+      .on('get', this.getDevicesSensorStatusCharacteristic.bind(this));
     this.services.push(humidityService);
     
      /* Temperature Service */

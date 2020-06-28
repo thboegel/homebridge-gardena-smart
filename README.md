@@ -1,26 +1,26 @@
-[![npm](https://img.shields.io/npm/v/homebridge-gardena-mower.svg?style=plastic)](https://www.npmjs.com/package/homebridge-gardena-mower)
-[![npm](https://img.shields.io/npm/dt/homebridge-gardena-mower.svg?style=plastic)](https://www.npmjs.com/package/homebridge-gardena-mower)
-[![GitHub last commit](https://img.shields.io/github/last-commit/neuhausf/homebridge-gardena-mower.svg?style=plastic)](https://github.com/neuhausf/homebridge-gardena-mower)
-# homebridge-gardena-mower
+[![npm](https://img.shields.io/npm/v/homebridge-gardena-mower.svg?style=plastic)](https://www.npmjs.com/package/homebridge-gardena-smart)
+[![npm](https://img.shields.io/npm/dt/homebridge-gardena-mower.svg?style=plastic)](https://www.npmjs.com/package/homebridge-gardena-smart)
+[![GitHub last commit](https://img.shields.io/github/last-commit/thboegel/homebridge-gardena-smart.svg?style=plastic)](https://github.com/thboegel/homebridge-gardena-smart)
+# homebridge-gardena-smart
 
-This [homebridge](https://github.com/nfarina/homebridge) plugin provides homekit support for Gardena lawnmowers. The requirement is a smart robot with [smart system](https://www.gardena.com/int/products/smart) connection (e.g. smart SILENO City).
-The connection is implemented in the form of a fan, as Homekit does not yet support lawnmowers. When switched on, the robot runs for 3 hours (configurable via `mowingDurationSeconds`). Switching off means parking.
+This [homebridge](https://github.com/nfarina/homebridge) plugin provides Homekit support for Gardena smart sensors that allow to measure soil humidity and temperature. The requirement is a smart Gardena sensor with [smart system](https://www.gardena.com/int/products/smart) connection via a Gardena gateway.
+Supports [fakegato-history](https://github.com/simont77/fakegato-history) to show a history graph of humidity and temperatures.
+
 
 ## Usage
 
-`npm install -g homebridge-gardena-mower`
+`npm install -g homebridge-gardena-smart`
 
 ## Configuration
-You can also configure this plugin via [ConfigUI-X's settings](https://github.com/oznu/homebridge-config-ui-x/wiki/Developers:-Plugin-Settings-GUI) feature.
 
+Add the following to your homebridge config.json
 ``` json
 "accessories": [
 	{  
 		"accessory": "gardena-mower",  
-		"name": "name-of-your-mower",  
-		"manufacturer": "Mower Manufacturer",  
-		"model": "Mower Model",
-		"mowingDurationSeconds": 10800,
+		"name": "name-of-your-sensor",  
+		"manufacturer": "Sensor Manufacturer",  
+		"model": "Sensor Model",
 		"username": "Gardena Username",
 		"password": "Gardena Password"
 	}  
@@ -28,4 +28,4 @@ You can also configure this plugin via [ConfigUI-X's settings](https://github.co
 ```
 
 ## Credits
-This plugin is a fork from [homebridge-gardena-lawnmower](https://github.com/redindian/homebridge-gardena-lawnmower) by [redindian](https://github.com/redindian)
+This plugin is a fork from [homebridge-gardena-mower](https://github.com/neuhausf/homebridge-gardena-mower) by [neuhausf](https://github.com/neuhausf).

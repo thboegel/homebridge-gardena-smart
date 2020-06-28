@@ -1,8 +1,8 @@
 {
   "name": "homebridge-gardena-smart",
   "version": "0.0.1",
-  "author": "thb",
-  "description": "Enables homekit support for smart system enabled Gardena lawnmowers.",
+  "author": "ThomasBoegel",
+  "description": "Enables homekit support for smart Gardena sensors measuring soil humidity and temperature.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,10 +14,7 @@
   },
   "keywords": [
     "homebridge-plugin",
-    "lawn mower",
     "gardena",
-    "automower",
-    "sileno",
     "homekit"
   ],
   "dependencies": {
@@ -29,10 +26,10 @@
   "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/neuhausf/homebridge-gardena-mower.git"
+    "url": "git+https://github.com/thboegel/homebridge-gardena-smart.git"
   },
   "bugs": {
-    "url": "https://github.com/neuhausf/homebridge-gardena-mower/issues"
+    "url": "https://github.com/thboegel/homebridge-gardena-smart/issues"
   },
-  "homepage": "https://github.com/neuhausf/homebridge-gardena-mower#readme"
+  "homepage": "https://github.com/thboegel/homebridge-gardena-smart"
 }
