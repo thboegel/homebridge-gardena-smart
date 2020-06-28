@@ -19,7 +19,7 @@ function MyGardenaSmart(log, config) {
   this.manufactInfo = config['manufacturer'];
   this.modelInfo = config['model'];
   this.serialNumberInfo = config['serial'];
-  this.mowingDurationSeconds = config['mowingDurationSeconds'] || 10800;
+  //this.mowingDurationSeconds = config['mowingDurationSeconds'] || 10800;
   
   this.user_id = null;
   this.locationId = null;
@@ -333,7 +333,7 @@ MyGardenaSmart.prototype = {
 
     //Accessory.log = this.log;
     //this.loggingService = new FakeGatoHistoryService("weather", Accessory);
-    let fakeGatoHistoryService = new FakeGatoHistoryService("room", this, { storage: 'fs' });
+    this.fakeGatoHistoryService = new FakeGatoHistoryService("room", this, { storage: 'fs' });
     this.services.push(fakeGatoHistoryService)
 
     /* Battery Service */
