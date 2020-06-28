@@ -2,6 +2,7 @@ const API_URI = 'https://smart.gardena.com/v1/';
 
 const rp = require('request-promise-native');
 const jq = require('json-query');
+var timeout;
 
 let Service, Characteristic;
 
@@ -29,6 +30,9 @@ function MyGardenaSmart(log, config) {
 }
 
 MyGardenaSmart.prototype = {
+
+  timeout = setTimeout(this.updateSensorData.bind(this), 10 * 60 * 1000);
+
 
   getToken: function () {
     const me = this;
@@ -202,6 +206,17 @@ MyGardenaSmart.prototype = {
     });
   },
 
+  updateSensorData: function () {
+    const value = await this.getDevicesSensorHumidity();
+    const temperature = await this.getDevicesSensorTemperature();
+
+    this.fakeGatoHistoryService.addEntry({
+                time: new Date().getTime() / 1000,
+                temp: temperature,
+                humidity: value
+    });
+
+  },
   
 
   getDevicesSensorStatusCharacteristic: async function (next) {
@@ -234,13 +249,6 @@ MyGardenaSmart.prototype = {
   getSensorTemperatureCharacteristic: async function (next) {
     const value = await this.getDevicesSensorTemperature();
     //this.log('getSensorHumidityCharacteristic', {value});
-    const humidity = await this.getDevicesSensorHumidity();
-
-    this.fakeGatoHistoryService.addEntry({
-                time: new Date().getTime() / 1000,
-                temp: value,
-                humidity: humidity 
-            });
     next(null, value);
   },
 
