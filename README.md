@@ -1,5 +1,5 @@
-[![npm](https://img.shields.io/npm/v/homebridge-gardena-mower.svg?style=plastic)](https://www.npmjs.com/package/homebridge-gardena-smart)
-[![npm](https://img.shields.io/npm/dt/homebridge-gardena-mower.svg?style=plastic)](https://www.npmjs.com/package/homebridge-gardena-smart)
+[![npm](https://img.shields.io/npm/v/homebridge-gardena-smart.svg?style=plastic)](https://www.npmjs.com/package/homebridge-gardena-smart)
+[![npm](https://img.shields.io/npm/dt/homebridge-gardena-smart.svg?style=plastic)](https://www.npmjs.com/package/homebridge-gardena-smart)
 [![GitHub last commit](https://img.shields.io/github/last-commit/thboegel/homebridge-gardena-smart.svg?style=plastic)](https://github.com/thboegel/homebridge-gardena-smart)
 # homebridge-gardena-smart
 

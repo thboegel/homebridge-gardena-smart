@@ -1,6 +1,6 @@
 {
   "name": "homebridge-gardena-smart",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "ThomasBoegel",
   "description": "Enables homekit support for smart Gardena sensors measuring soil humidity and temperature.",
   "main": "index.js",
