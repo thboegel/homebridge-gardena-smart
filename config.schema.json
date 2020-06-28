@@ -2,8 +2,8 @@
   "pluginAlias": "gardena-smart",
   "pluginType": "accessory",
   "singular": true,
-  "headerDisplay": "Homebridge plugin for smart system enabled Gardena system",
-  "footerDisplay": "For a detailed description, see the [README](https://github.com/neuhausf/homebridge-gardena-mower#readme) file.",
+  "headerDisplay": "Homebridge plugin for smart Gardena sensors with history support (soil temperature and humidity)",
+  "footerDisplay": "For a detailed description, see the [README](https://github.com/thboegel/homebridge-gardena-smart) file.",
   "schema": {
     "type": "object",
     "properties": {
