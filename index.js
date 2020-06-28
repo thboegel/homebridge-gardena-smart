@@ -138,7 +138,7 @@ MyGardenaSmart.prototype = {
 
   getDevicesSensorStatus: async function () {
     const query1 = 'devices[category=sensor].abilities[type=device_info][properties][name=connection_status].timestamp';
-    this.log("Timestamp: ", this.queryDevices(query1));
+    await this.log("Timestamp: ", this.queryDevices(query1));
     const query = 'devices[category=sensor].abilities[type=device_info][properties][name=connection_status].value';
     return await this.queryDevices(query);
   },
