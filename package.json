@@ -1,6 +1,6 @@
 {
   "name": "homebridge-gardena-smart",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "author": "Thomas Boegel",
   "description": "Enables Homekit and Eve support for smart Gardena sensors measuring soil humidity and temperature.",
   "main": "index.js",

@@ -186,7 +186,7 @@ MyGardenaSmart.prototype = {
   getDevices: async function () {
     const millidifference = Date.now() - this.lastupdate;
     if (Math.floor(millidifference / 1000) > this.updateInterval) {
-      this.log("Refreshing device data from server");
+      //this.log("Refreshing device data from server");
       data = await this.updateDevices();
       this.devices = data;
       this.lastupdate = Date.now();
@@ -234,7 +234,7 @@ MyGardenaSmart.prototype = {
     });
   
 
-    this.log('Update sensor data', value + "; " + temperature);
+    this.log('Update sensor data. Humidtiy: ', value + "; temperature: " + temperature);
     // repeat this every 10 minutes
     timeout = setTimeout(this.updateSensorData.bind(this), 10 * 60 * 1000);
 
