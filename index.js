@@ -22,6 +22,7 @@ function MyGardenaSmart(log, config) {
   this.password = config['password'];
   this.manufactInfo = config['manufacturer'];
   this.modelInfo = config['model'];
+  this.updateInterval = config['updateInterval']
   this.serialNumberInfo = config['serial'];
   //this.mowingDurationSeconds = config['mowingDurationSeconds'] || 10800;
   
@@ -185,7 +186,7 @@ MyGardenaSmart.prototype = {
     millidifference = Date.now() - this.lastupdate;
     data = this.devices;
 
-    if (Math.floor(millidifference / 1000) > 600) {
+    if (this.lastupdate == 0 || Math.floor(millidifference / 1000) > this.updateInterval) {
       this.log("Refreshing device data");
       data = await this.updateDevices();
       this.lastupdate = Date.now();

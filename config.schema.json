@@ -18,6 +18,12 @@
         "type": "string",
         "default": "Gardena",
         "required": true
+      },
+  "updateInterval": {
+        "title": "Update Interval in seconds",
+        "type": "integer",
+        "default": 30,
+        "required": true
       },	  
 	  "model": {
         "title": "Model",
