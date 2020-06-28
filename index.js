@@ -142,15 +142,13 @@ MyGardenaSmart.prototype = {
   // },
 
   getDevicesMowerStatus: async function () {
-    //const query = 'devices[category=mower].abilities[type=robotic_mower][properties][name=status].value';
-    const query = 'devices[category=sensor].abilities[type=device_info][properties][name=connection_status].value';
-    //query2 = 'devices[category=sensor]';
-    //this.log("sensor device:", this.queryDevices(query));
+    const query = 'devices[category=mower].abilities[type=robotic_mower][properties][name=status].value';
+    this.log("mower device:", this.queryDevices(query));
     return await this.queryDevices(query);
   },
 
   getDevicesSensorStatus: async function () {
-    const query = 'devices[category=sensor].abilities[type=robotic_mower][properties][name=status].value';
+    const query = 'devices[category=sensor].abilities[type=device_info][properties][name=connection_status].value';
     return await this.queryDevices(query);
   },
 
@@ -177,7 +175,6 @@ MyGardenaSmart.prototype = {
 
   queryDevices: async function (query) {
     const data = await this.getDevices();
-    this.log("jsondata", JSON.stringify(data));
     const result = jq(query, {data});
     this.log('queryDevices', {data, query, result});
     return result ? result.value : null;
@@ -242,8 +239,14 @@ MyGardenaSmart.prototype = {
   },
 
   getSensorHumidityCharacteristic: async function (next) {
-    const value = await this.getDevicesSensorHumidity
-    // this.log('getBatteryLevelCharacteristic', {value});
+    const value = await this.getDevicesSensorHumidity();
+    this.log('getSensorHumidityCharacteristic', {value});
+
+    this.fakeGatoHistoryService.addEntry({
+                time: new Date().getTime() / 1000,
+                temp: 0,
+                humidity: value
+            });
     next(null, value);
   },
 
@@ -328,15 +331,17 @@ MyGardenaSmart.prototype = {
       .setCharacteristic(Characteristic.SerialNumber, this.serialNumberInfo);
     this.services.push(informationService);
 
+    //Accessory.log = this.log;
+    //this.loggingService = new FakeGatoHistoryService("weather", Accessory);
+    let fakeGatoHistoryService = new FakeGatoHistoryService("room", this, { storage: 'fs' });
+    this.services.push(fakeGatoHistoryService)
+
     /* Battery Service */
 
     let batteryService = new Service.BatteryService();
     batteryService
       .getCharacteristic(Characteristic.BatteryLevel)
       .on('get', this.getBatteryLevelCharacteristic.bind(this));
-    batteryService
-      .getCharacteristic(Characteristic.ChargingState)
-      .on('get', this.getChargingStateCharacteristic.bind(this));
     batteryService
       .getCharacteristic(Characteristic.StatusLowBattery)
       .on('get', this.getLowBatteryCharacteristic.bind(this));
