@@ -7,8 +7,11 @@ var timeout;
 let Service, Characteristic;
 
 module.exports = function (homebridge) {
+  Accessory = homebridge.platformAccessory;
   Service = homebridge.hap.Service;
   Characteristic = homebridge.hap.Characteristic;
+  UUID = homebridge.hap.uuid;
+
   FakeGatoHistoryService = require("fakegato-history")(homebridge);
   homebridge.registerAccessory("homebridge-gardena-smart", "gardena-smart", MyGardenaSmart);
 };
@@ -214,7 +217,10 @@ MyGardenaSmart.prototype = {
                 temp: temperature,
                 humidity: value
     });
-    this.log('Update sensor data', new Date().getTime() / 1000);
+  
+
+    this.log('Update sensor data');
+    // repeat this every 10 minutes
     timeout = setTimeout(this.updateSensorData.bind(this), 10 * 60 * 1000);
 
   },
@@ -238,12 +244,6 @@ MyGardenaSmart.prototype = {
     const value = await this.getDevicesSensorHumidity();
     //this.log('getSensorHumidityCharacteristic', {value});
     const temperature = await this.getDevicesSensorTemperature();
-
-    this.fakeGatoHistoryService.addEntry({
-                time: new Date().getTime() / 1000,
-                temp: temperature,
-                humidity: value
-            });
     next(null, value);
   },
 
@@ -252,21 +252,6 @@ MyGardenaSmart.prototype = {
     //this.log('getSensorHumidityCharacteristic', {value});
     next(null, value);
   },
-
-
-  getChargingStateCharacteristic: async function (next) {
-    const value = await this.getDevicesBatteryCharging();
-    // this.log('getChargingStateCharacteristic', {value});
-    next(null, value);
-  },
-
-  getLowBatteryCharacteristic: async function (next) {
-    const value = await this.getDevicesBatteryLevel();
-    const low = value < 20;
-    // this.log('getLowBatteryCharacteristic', {value, low});
-    next(null, low);
-  },
-
 
 
 
@@ -293,14 +278,11 @@ MyGardenaSmart.prototype = {
     batteryService
       .getCharacteristic(Characteristic.BatteryLevel)
       .on('get', this.getBatteryLevelCharacteristic.bind(this));
-    batteryService
-      .getCharacteristic(Characteristic.StatusLowBattery)
-      .on('get', this.getLowBatteryCharacteristic.bind(this));
     this.services.push(batteryService);
 
     /* Humidity Service */
     
-    let humidityService = new Service.HumiditySensor('Bodenfeuchtigkeit');
+    let humidityService = new Service.HumiditySensor('Soil Humidity');
     humidityService
       .getCharacteristic(Characteristic.CurrentRelativeHumidity)
       .on('get', this.getSensorHumidityCharacteristic.bind(this));
@@ -310,7 +292,7 @@ MyGardenaSmart.prototype = {
     
      /* Temperature Service */
     
-    let temperatureService = new Service.TemperatureSensor('Außentemperatur');
+    let temperatureService = new Service.TemperatureSensor('Soil Temperature');
     temperatureService
       .getCharacteristic(Characteristic.CurrentTemperature)
       .on('get', this.getSensorTemperatureCharacteristic.bind(this));
