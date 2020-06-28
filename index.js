@@ -190,8 +190,6 @@ MyGardenaSmart.prototype = {
       data = await this.updateDevices();
       this.device = data;
       this.lastupdate = Date.now();
-    } else {
-      this.log("Returning cached data", data);
     }
     return data;
   },

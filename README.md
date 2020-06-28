@@ -22,7 +22,8 @@ Add the following to your homebridge config.json
 		"manufacturer": "Sensor Manufacturer",  
 		"model": "Sensor Model",
 		"username": "Gardena Username",
-		"password": "Gardena Password"
+		"password": "Gardena Password",
+		"updateInterval": "Update interval in seconds (before data is pulled again from Gardena API)"
 	}  
 ],
 ```
