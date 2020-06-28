@@ -29,7 +29,7 @@ function MyGardenaSmart(log, config) {
   this.user_id = null;
   this.locationId = null;
   this.devices = this.updateDevices();;
-  this.lastupdate = 1;
+  this.lastupdate = Date.now();
 
   // this.getUserId();
   this.getLocationsLocationId();
@@ -185,14 +185,13 @@ MyGardenaSmart.prototype = {
   getDevices: async function () {
     millidifference = Date.now() - this.lastupdate;
     data = this.devices;
-
-    if (this.lastupdate == 0 || Math.floor(millidifference / 1000) > this.updateInterval) {
+    if (Math.floor(millidifference / 1000) > this.updateInterval) {
       this.log("Refreshing device data");
       data = await this.updateDevices();
       this.device = data;
       this.lastupdate = Date.now();
     } else {
-      this.log("Returning cached data");
+      this.log("Returning cached data", data);
     }
     return data;
   },
