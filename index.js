@@ -215,7 +215,7 @@ MyGardenaSmart.prototype = {
                 temp: temperature,
                 humidity: value
     });
-
+    this.log('Update sensor data', new Date().getTime() / 1000);
   },
   
 
