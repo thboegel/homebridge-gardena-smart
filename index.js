@@ -205,7 +205,7 @@ MyGardenaSmart.prototype = {
     });
   },
 
-  updateSensorData: function () {
+  updateSensorData: async function () {
     const value = await this.getDevicesSensorHumidity();
     const temperature = await this.getDevicesSensorTemperature();
 
