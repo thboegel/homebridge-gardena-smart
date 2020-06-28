@@ -137,8 +137,6 @@ MyGardenaSmart.prototype = {
  
 
   getDevicesSensorStatus: async function () {
-    const query1 = 'devices[category=sensor].abilities[type=device_info][properties][name=connection_status].timestamp';
-    await this.log("Timestamp: ", this.queryDevices(query1));
     const query = 'devices[category=sensor].abilities[type=device_info][properties][name=connection_status].value';
     return await this.queryDevices(query);
   },
@@ -174,22 +172,21 @@ MyGardenaSmart.prototype = {
 
   updateDevices: async function () {
     const locationId = await this.getLocationsLocationId();
-
-    return await this.callApi(
+    this.devices = await this.callApi(
       'GET',
       API_URI + 'devices',
       {
         locationId: locationId
       }
     );
+
+    return this.devices;
   },
 
   getDevices: async function () {
     const millidifference = Date.now() - this.lastupdate;
-    this.log("Update delta in milliseconds ", Math.floor(millidifference / 1000))
-    data = this.devices;
     if (Math.floor(millidifference / 1000) > this.updateInterval) {
-      this.log("Refreshing device data");
+      this.log("Refreshing device data from server");
       data = await this.updateDevices();
       this.devices = data;
       this.lastupdate = Date.now();
@@ -237,7 +234,7 @@ MyGardenaSmart.prototype = {
     });
   
 
-    this.log('Update sensor data');
+    this.log('Update sensor data', value + "; " + temperature);
     // repeat this every 10 minutes
     timeout = setTimeout(this.updateSensorData.bind(this), 10 * 60 * 1000);
 
