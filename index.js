@@ -188,6 +188,7 @@ MyGardenaSmart.prototype = {
     if (Math.floor(millidifference / 1000) > 600) {
       this.log("Refreshing device data");
       data = await this.updateDevices();
+      this.lastupdate = Date.now();
     } else {
       this.log("Returning cached data");
     }
