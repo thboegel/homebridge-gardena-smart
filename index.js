@@ -390,7 +390,7 @@ MyGardenaSmart.prototype = {
     temperatureService
       .getCharacteristic(Characteristic.CurrentTemperature)
       .on('get', this.getSensorTemperatureCharacteristic.bind(this));
-    tempService.getCharacteristic(Characteristic.StatusActive)
+    temperatureService.getCharacteristic(Characteristic.StatusActive)
       .on('get', this.getDevicesSensorStatusCharacteristic.bind(this));
 
     this.services.push(temperatureService);
