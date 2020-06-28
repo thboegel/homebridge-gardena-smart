@@ -125,29 +125,7 @@ MyGardenaSmart.prototype = {
     );
   },
 
-  getDevicesMowerId: async function () {
-    if (!this.mowerId) {
-      this.log('getDevicesMowerId', 'set mowerId');
-      const query = 'devices.id';
-      const mowerId = await this.queryDevices(query);
-      this.log('getDevicesMowerId', {mowerId});
-      this.mowerId = mowerId;
-    }
-    return this.mowerId;
-  },
-
-  /* getDevicesMowerProperties: async function () {
-  //   const query = 'devices[category=mower].abilities[type=robotic_mower][properties]';
-  //   return await this.queryDevices(query);
-  // },
-
-
-  getDevicesMowerStatus: async function () {
-    const query = 'devices[category=mower].abilities[type=robotic_mower][properties][name=status].value';
-    this.log("mower device:", this.queryDevices(query));
-    return await this.queryDevices(query);
-  },
-  */
+ 
 
   getDevicesSensorStatus: async function () {
     const query = 'devices[category=sensor].abilities[type=device_info][properties][name=connection_status].value';
@@ -165,10 +143,6 @@ MyGardenaSmart.prototype = {
     return await this.queryDevices(query);
   },
 
-  // getDevicesBatteryProperties: async function () {
-  //   const query = 'devices[category=mower].abilities[type=battery_power].properties[name=level].value';
-  //   return await this.queryDevices(query);
-  // },
 
   getDevicesBatteryLevel: async function () {
     const query = 'devices[category=sensor].abilities[type=battery_power].properties[name=level].value';
@@ -183,7 +157,7 @@ MyGardenaSmart.prototype = {
   queryDevices: async function (query) {
     const data = await this.getDevices();
     const result = jq(query, {data});
-    this.log('queryDevices', {data, query, result});
+    //this.log('queryDevices', {data, query, result});
     return result ? result.value : null;
   },
 
@@ -228,16 +202,7 @@ MyGardenaSmart.prototype = {
     });
   },
 
-  getMowerOnCharacteristic: async function (next) {
-    const status = await this.getDevicesMowerStatus();
-    const mowing = this.isMowingStatus(status) ? 1 : 0;
-    // this.log('getMowerOnCharacteristic', {status, mowing});
-    next(null, mowing);
-  },
-
-  isMowingStatus: function (status) {
-    return ['ok_cutting', 'ok_cutting_timer_overridden'].includes(status);
-  },
+  
 
   getDevicesSensorStatusCharacteristic: async function (next) {
     const status = await this.getDevicesSensorStatus();
@@ -293,60 +258,8 @@ MyGardenaSmart.prototype = {
     next(null, low);
   },
 
-  sendMowerCommand: async function (command, parameters) {
-    const me = this;
 
-    const locationId = await this.getLocationsLocationId();
-    const mowerId = await this.getDevicesMowerId();
-    const token = await this.getToken();
 
-    return new Promise((resolve, reject) => {
-      const body = {
-        name: command
-      };
-      if (parameters) {
-        body.parameters = parameters;
-      }
-      const options = {
-        method: 'POST',
-        uri: API_URI + 'devices/' + mowerId + '/abilities/mower/command',
-        body: body,
-        qs: {
-          locationId: locationId
-        },
-        headers: {
-          'Authorization': 'Bearer ' + token.token,
-          'Authorization-Provider': token.provider,
-        },
-        json: true // Automatically parses the JSON string in the response
-      };
-
-      rp(options)
-        .then(function (response) {
-          me.log('sendMowerCommand', response);
-          resolve(response);
-        })
-        .catch(function (err) {
-          me.log('Cannot send command.', {options}, err.statusCode, err.statusMessage);
-          reject(err);
-        });
-    });
-  },
-
-  setMowerOnCharacteristic: function (on, next) {
-    this.log('setMowerOnCharacteristic', {on}, this.mowingDurationSeconds);
-
-    if (on) {
-      // start_override_timer, start_resume_schedule
-      this.sendMowerCommand('start_override_timer', {
-        duration: this.mowingDurationSeconds
-      }).then(() => next()).catch(next);
-    } else {
-      // park_until_next_timer, park_until_further_notice
-      this.sendMowerCommand('park_until_next_timer')
-        .then(() => next()).catch(next);
-    }
-  },
 
   getServices: function () {
     this.services = [];
@@ -408,15 +321,7 @@ MyGardenaSmart.prototype = {
     this.services.push(switchService);
     */
 
-    /* Fan Service 
-
-    let fanService = new Service.Fan('Sensor');
-    fanService
-      .getCharacteristic(Characteristic.On)
-      .on('get', this.getMowerOnCharacteristic.bind(this))
-      .on('set', this.setMowerOnCharacteristic.bind(this));
-    this.services.push(fanService);
-*/
+  
     return this.services;
   },
   

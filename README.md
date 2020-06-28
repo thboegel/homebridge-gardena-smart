@@ -17,7 +17,7 @@ Add the following to your homebridge config.json
 ``` json
 "accessories": [
 	{  
-		"accessory": "gardena-mower",  
+		"accessory": "gardena-smart",  
 		"name": "name-of-your-sensor",  
 		"manufacturer": "Sensor Manufacturer",  
 		"model": "Sensor Model",
