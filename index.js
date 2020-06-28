@@ -31,7 +31,6 @@ function MyGardenaSmart(log, config) {
 
 MyGardenaSmart.prototype = {
 
-  timeout = setTimeout(this.updateSensorData.bind(this), 10 * 60 * 1000);
 
 
   getToken: function () {
@@ -216,6 +215,8 @@ MyGardenaSmart.prototype = {
                 humidity: value
     });
     this.log('Update sensor data', new Date().getTime() / 1000);
+    timeout = setTimeout(this.updateSensorData.bind(this), 10 * 60 * 1000);
+
   },
   
 
@@ -317,7 +318,7 @@ MyGardenaSmart.prototype = {
       .on('get', this.getDevicesSensorStatusCharacteristic.bind(this));
 
     this.services.push(temperatureService);
-
+    this.updateSensorData();
     /* Switch Service */
 
     /*
