@@ -28,7 +28,7 @@ function MyGardenaSmart(log, config) {
   
   this.user_id = null;
   this.locationId = null;
-  this.devices = null;
+  this.devices = this.updateDevices();;
   this.lastupdate = 1;
 
   // this.getUserId();
