@@ -27,6 +27,8 @@ function MyGardenaSmart(log, config) {
   
   this.user_id = null;
   this.locationId = null;
+  this.devices = null;
+  this.lastupdate = 0;
 
   // this.getUserId();
   this.getLocationsLocationId();
@@ -167,7 +169,7 @@ MyGardenaSmart.prototype = {
     return result ? result.value : null;
   },
 
-  getDevices: async function () {
+  updateDevices: async function () {
     const locationId = await this.getLocationsLocationId();
 
     return await this.callApi(
@@ -177,6 +179,19 @@ MyGardenaSmart.prototype = {
         locationId: locationId
       }
     );
+  },
+
+  getDevices: async function () {
+    millidifference = Date.now() - this.lastupdate;
+    data = this.devices;
+
+    if (Math.floor(millis / 1000) > 600) {
+      this.log("Refreshing device data");
+      data = await this.updateDevices();
+    } else {
+      this.log("Returning cached data");
+    }
+    return data;
   },
 
   callApi: async function (method, uri, qs, body) {
