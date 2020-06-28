@@ -186,7 +186,7 @@ MyGardenaSmart.prototype = {
     millidifference = Date.now() - this.lastupdate;
     data = this.devices;
 
-    if (Object.keys(data)length < 1 || this.lastupdate == 0 || Math.floor(millidifference / 1000) > this.updateInterval) {
+    if (Object.keys(data).length < 1 || this.lastupdate == 0 || Math.floor(millidifference / 1000) > this.updateInterval) {
       this.log("Refreshing device data");
       data = await this.updateDevices();
       this.lastupdate = Date.now();
