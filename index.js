@@ -192,7 +192,7 @@ MyGardenaSmart.prototype = {
       this.devices = data;
       this.lastupdate = Date.now();
     }
-    return data;
+    return this.devices;
   },
 
   callApi: async function (method, uri, qs, body) {
@@ -259,7 +259,6 @@ MyGardenaSmart.prototype = {
   getSensorHumidityCharacteristic: async function (next) {
     const value = await this.getDevicesSensorHumidity();
     //this.log('getSensorHumidityCharacteristic', {value});
-    const temperature = await this.getDevicesSensorTemperature();
     next(null, value);
   },
 
