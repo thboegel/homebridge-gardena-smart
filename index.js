@@ -334,7 +334,7 @@ MyGardenaSmart.prototype = {
     //Accessory.log = this.log;
     //this.loggingService = new FakeGatoHistoryService("weather", Accessory);
     this.fakeGatoHistoryService = new FakeGatoHistoryService("room", this, { storage: 'fs' });
-    this.services.push(fakeGatoHistoryService)
+    this.services.push(this.fakeGatoHistoryService)
 
     /* Battery Service */
 
