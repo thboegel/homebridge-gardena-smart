@@ -184,6 +184,7 @@ MyGardenaSmart.prototype = {
 
   getDevices: async function () {
     millidifference = Date.now() - this.lastupdate;
+    this.log("Update delta in milliseconds ", Math.floor(millidifference / 1000))
     data = this.devices;
     if (Math.floor(millidifference / 1000) > this.updateInterval) {
       this.log("Refreshing device data");
