@@ -136,16 +136,18 @@ MyGardenaSmart.prototype = {
     return this.mowerId;
   },
 
-  // getDevicesMowerProperties: async function () {
+  /* getDevicesMowerProperties: async function () {
   //   const query = 'devices[category=mower].abilities[type=robotic_mower][properties]';
   //   return await this.queryDevices(query);
   // },
+
 
   getDevicesMowerStatus: async function () {
     const query = 'devices[category=mower].abilities[type=robotic_mower][properties][name=status].value';
     this.log("mower device:", this.queryDevices(query));
     return await this.queryDevices(query);
   },
+  */
 
   getDevicesSensorStatus: async function () {
     const query = 'devices[category=sensor].abilities[type=device_info][properties][name=connection_status].value';
@@ -155,6 +157,11 @@ MyGardenaSmart.prototype = {
 
   getDevicesSensorHumidity: async function () {
     const query = 'devices[category=sensor].abilities[type=soil_humidity_sensor][properties][name=humidity].value';
+    return await this.queryDevices(query);
+  },
+
+  getDevicesSensorTemperature: async function () {
+    const query = 'devices[category=sensor].abilities[type=soil_temperature][properties][name=temperature].value';
     return await this.queryDevices(query);
   },
 
@@ -232,6 +239,14 @@ MyGardenaSmart.prototype = {
     return ['ok_cutting', 'ok_cutting_timer_overridden'].includes(status);
   },
 
+  getDevicesSensorStatusCharacteristic: async function (next) {
+    const status = await this.getDevicesSensorStatus();
+    statusBool = ['good'].includes(status);
+
+    const sensorStatus = statusBool ? 1 : 0;
+    next(null, sensorStatus);
+  },
+
   getBatteryLevelCharacteristic: async function (next) {
     const value = await this.getDevicesBatteryLevel();
     // this.log('getBatteryLevelCharacteristic', {value});
@@ -240,12 +255,26 @@ MyGardenaSmart.prototype = {
 
   getSensorHumidityCharacteristic: async function (next) {
     const value = await this.getDevicesSensorHumidity();
-    this.log('getSensorHumidityCharacteristic', {value});
+    //this.log('getSensorHumidityCharacteristic', {value});
+    const temperature = await this.getDevicesSensorTemperature();
 
     this.fakeGatoHistoryService.addEntry({
                 time: new Date().getTime() / 1000,
-                temp: 0,
+                temp: temperature,
                 humidity: value
+            });
+    next(null, value);
+  },
+
+  getSensorTemperatureCharacteristic: async function (next) {
+    const value = await this.getDevicesSensorTemperature();
+    //this.log('getSensorHumidityCharacteristic', {value});
+    const humidity = await this.getDevicesSensorHumidity();
+
+    this.fakeGatoHistoryService.addEntry({
+                time: new Date().getTime() / 1000,
+                temp: value,
+                humidity: humidity 
             });
     next(null, value);
   },
@@ -355,6 +384,17 @@ MyGardenaSmart.prototype = {
       .on('get', this.getSensorHumidityCharacteristic.bind(this));
     this.services.push(humidityService);
     
+     /* Temperature Service */
+    
+    let temperatureService = new Service.TemperatureSensor('Außentemperatur');
+    temperatureService
+      .getCharacteristic(Characteristic.CurrentTemperature)
+      .on('get', this.getSensorTemperatureCharacteristic.bind(this));
+    tempService.getCharacteristic(Characteristic.StatusActive)
+      .on('get', this.getDevicesSensorStatusCharacteristic.bind(this));
+
+    this.services.push(temperatureService);
+
     /* Switch Service */
 
     /*
