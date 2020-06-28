@@ -137,6 +137,8 @@ MyGardenaSmart.prototype = {
  
 
   getDevicesSensorStatus: async function () {
+    let query = 'devices[category=sensor].abilities[type=device_info][properties][name=connection_status].timestamp';
+    this.log("Timestamp: ", this.queryDevices(query));
     const query = 'devices[category=sensor].abilities[type=device_info][properties][name=connection_status].value';
     return await this.queryDevices(query);
   },
@@ -183,7 +185,7 @@ MyGardenaSmart.prototype = {
   },
 
   getDevices: async function () {
-    millidifference = Date.now() - this.lastupdate;
+    const millidifference = Date.now() - this.lastupdate;
     this.log("Update delta in milliseconds ", Math.floor(millidifference / 1000))
     data = this.devices;
     if (Math.floor(millidifference / 1000) > this.updateInterval) {
