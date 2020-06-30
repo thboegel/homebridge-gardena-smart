@@ -147,6 +147,13 @@ MyGardenaSmart.prototype = {
     return await this.queryDevices(query);
   },
 
+  getDevicesSensorLight: async function () {
+    const query = 'devices[category=sensor].abilities[type=light_sensor][properties][name=light].value';
+    return await this.queryDevices(query);
+  },
+
+
+
   getDevicesSensorTemperature: async function () {
     const query = 'devices[category=sensor].abilities[type=soil_temperature_sensor][properties][name=temperature].value';
     return await this.queryDevices(query);
@@ -226,15 +233,17 @@ MyGardenaSmart.prototype = {
   updateSensorData: async function () {
     const value = await this.getDevicesSensorHumidity();
     const temperature = await this.getDevicesSensorTemperature();
+    const light = await this.getDevicesSensorLight();
 
     this.fakeGatoHistoryService.addEntry({
                 time: new Date().getTime() / 1000,
                 temp: temperature,
+                ppm: light,
                 humidity: value
     });
   
 
-    this.log('Update sensor data. Humidtiy: ', value + "; temperature: " + temperature);
+    this.log('Update sensor data. Humidtiy: ', value + "; temperature: " + temperature + "; light: " + light);
     // repeat this every 10 minutes
     timeout = setTimeout(this.updateSensorData.bind(this), 10 * 60 * 1000);
 
@@ -264,6 +273,12 @@ MyGardenaSmart.prototype = {
   getSensorTemperatureCharacteristic: async function (next) {
     const value = await this.getDevicesSensorTemperature();
     //this.log('getSensorHumidityCharacteristic', {value});
+    next(null, value);
+  },
+
+  getSensorLightCharacteristic: async function (next) {
+  const value = await this.getDevicesSensorLight();
+    this.log('getSensorLightCharacteristic', {value});
     next(null, value);
   },
 
@@ -314,6 +329,25 @@ MyGardenaSmart.prototype = {
       .on('get', this.getDevicesSensorStatusCharacteristic.bind(this));
 
     this.services.push(temperatureService);
+
+     /* Light Service */
+    
+    let lightService = new Service.LightSensor('Light');
+    lightService
+      .getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+      .setProps({
+                    minValue: 0,
+                    maxValue: 100000
+                })
+      .on("get", this.getSensorLightCharacteristic.bind(this));
+
+
+
+    this.services.push(lightService);
+
+
+
+
     this.updateSensorData();
     /* Switch Service */
 
