@@ -3,8 +3,8 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/thboegel/homebridge-gardena-smart.svg?style=plastic)](https://github.com/thboegel/homebridge-gardena-smart)
 # homebridge-gardena-smart
 
-This [homebridge](https://github.com/nfarina/homebridge) plugin provides Homekit and Eve support for Gardena smart sensors that allow to measure soil humidity and temperature. The requirement is a Gardena sensor with [smart system](https://www.gardena.com/int/products/smart) connection via a Gardena gateway.
-Supports [fakegato-history](https://github.com/simont77/fakegato-history) to show a history graph of humidity and temperatures.
+This [homebridge](https://github.com/nfarina/homebridge) plugin provides Homekit and Eve support for Gardena smart sensors that allow to measure soil humidity, soil temperature and ambient light level. The requirement is a Gardena sensor with [smart system](https://www.gardena.com/int/products/smart) connection via a Gardena gateway.
+Supports [fakegato-history](https://github.com/simont77/fakegato-history) to show a history graph of soil humidity and temperature.
 
 
 ## Usage

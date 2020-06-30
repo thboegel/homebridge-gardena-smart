@@ -23,7 +23,7 @@ function MyGardenaSmart(log, config) {
   this.manufactInfo = config['manufacturer'];
   this.modelInfo = config['model'];
   this.updateInterval = config['updateInterval']
-  this.serialNumberInfo = config['serial'];
+  this.serialNumberInfo = null;
   //this.mowingDurationSeconds = config['mowingDurationSeconds'] || 10800;
   
   this.user_id = null;
@@ -104,10 +104,10 @@ MyGardenaSmart.prototype = {
 
   getLocationsLocationId: async function () {
     if (this.locationId === null) {
-      this.log('getLocationsLocationId', 'get locationId');
+      //this.log('getLocationsLocationId', 'get locationId');
       const query = 'locations[0].id';
       const locationId = await this.queryLocations(query);
-      this.log('getLocationsLocationId', {locationId});
+      //this.log('getLocationsLocationId', {locationId});
       this.locationId = locationId;
 
     }
@@ -163,6 +163,14 @@ MyGardenaSmart.prototype = {
   getDevicesBatteryLevel: async function () {
     const query = 'devices[category=sensor].abilities[type=battery_power].properties[name=level].value';
     return await this.queryDevices(query);
+  },
+
+  getSerialNumber: async function () {
+    if (this.serialNumber == null) {
+      const query = 'devices[category=sensor].abilities[type=device_info].properties[name=serial_number].value';
+      this.serialNumber = await this.queryDevices(query);
+    }
+    return this.serialNumber;
   },
 
   getDevicesBatteryCharging: async function () {
@@ -264,6 +272,12 @@ MyGardenaSmart.prototype = {
     next(null, value);
   },
 
+  getSerialNumberCharacteristic: async function (next) {
+    const value = await this.getSerialNumber();
+    // this.log('getBatteryLevelCharacteristic', {value});
+    next(null, value);
+  },
+
   getSensorHumidityCharacteristic: async function (next) {
     const value = await this.getDevicesSensorHumidity();
     //this.log('getSensorHumidityCharacteristic', {value});
@@ -278,7 +292,7 @@ MyGardenaSmart.prototype = {
 
   getSensorLightCharacteristic: async function (next) {
   const value = await this.getDevicesSensorLight();
-    this.log('getSensorLightCharacteristic', {value});
+    //this.log('getSensorLightCharacteristic', {value});
     next(null, value);
   },
 
@@ -293,7 +307,8 @@ MyGardenaSmart.prototype = {
     informationService
       .setCharacteristic(Characteristic.Manufacturer, this.manufactInfo)
       .setCharacteristic(Characteristic.Model, this.modelInfo)
-      .setCharacteristic(Characteristic.SerialNumber, this.serialNumberInfo);
+      .getCharacteristic(Characteristic.SerialNumber)
+        .on('get', this.getSerialNumberCharacteristic.bind(this));;
     this.services.push(informationService);
 
     //Accessory.log = this.log;

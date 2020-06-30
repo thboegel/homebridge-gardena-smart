@@ -2,7 +2,7 @@
   "pluginAlias": "gardena-smart",
   "pluginType": "accessory",
   "singular": true,
-  "headerDisplay": "Homebridge plugin for smart Gardena sensors with history support (soil temperature and humidity)",
+  "headerDisplay": "Homebridge plugin for smart Gardena sensors with history support (soil temperature, humidity and ambient light)",
   "footerDisplay": "For a detailed description, see the [README](https://github.com/thboegel/homebridge-gardena-smart) file.",
   "schema": {
     "type": "object",
