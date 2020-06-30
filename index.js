@@ -20,7 +20,7 @@ function MyGardenaSmart(log, config) {
   this.log = log;
   this.username = config['username'];
   this.password = config['password'];
-  this.manufactInfo = config['manufacturer'];
+  this.manufactInfo = "Gardena";
   this.modelInfo = config['model'];
   this.updateInterval = config['updateInterval']
   this.serialNumberInfo = null;
