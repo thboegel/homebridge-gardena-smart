@@ -168,7 +168,9 @@ MyGardenaSmart.prototype = {
   getSerialNumber: async function () {
     if (this.serialNumber == null) {
       const query = 'devices[category=sensor].abilities[type=device_info].properties[name=serial_number].value';
-      this.serialNumber = await this.queryDevices(query);
+      const serial = await this.queryDevices(query);
+      this.serialNumber = serial;
+      return serial;
     }
     return this.serialNumber;
   },
