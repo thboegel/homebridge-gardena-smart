@@ -24,6 +24,7 @@ function MyGardenaSmart(log, config) {
   this.modelInfo = config['model'];
   this.updateInterval = config['updateInterval']
   this.serialNumberInfo = null;
+  this.batteryLevel = null;
   //this.mowingDurationSeconds = config['mowingDurationSeconds'] || 10800;
   
   this.user_id = null;
@@ -135,7 +136,6 @@ MyGardenaSmart.prototype = {
   },
 
  
-
   getDevicesSensorStatus: async function () {
     const query = 'devices[category=sensor].abilities[type=device_info][properties][name=connection_status].value';
     return await this.queryDevices(query);
@@ -153,7 +153,6 @@ MyGardenaSmart.prototype = {
   },
 
 
-
   getDevicesSensorTemperature: async function () {
     const query = 'devices[category=sensor].abilities[type=soil_temperature_sensor][properties][name=temperature].value';
     return await this.queryDevices(query);
@@ -161,8 +160,11 @@ MyGardenaSmart.prototype = {
 
 
   getDevicesBatteryLevel: async function () {
-    const query = 'devices[category=sensor].abilities[type=battery_power].properties[name=level].value';
-    return await this.queryDevices(query);
+    if (this.batteryLevel == null) {
+      const query = 'devices[category=sensor].abilities[type=battery_power].properties[name=level].value';
+      this.batteryLevel = await this.queryDevices(query);
+    }
+    return this.batteryLevel;
   },
 
   getSerialNumber: async function () {
@@ -173,11 +175,6 @@ MyGardenaSmart.prototype = {
       return serial;
     }
     return this.serialNumber;
-  },
-
-  getDevicesBatteryCharging: async function () {
-    const query = 'devices[category=sensor].abilities[type=battery_power].properties[name=disposable_battery_status].value';
-    return await this.queryDevices(query);
   },
 
   queryDevices: async function (query) {
@@ -261,6 +258,7 @@ MyGardenaSmart.prototype = {
   
 
   getDevicesSensorStatusCharacteristic: async function (next) {
+    next(null, 1);
     const status = await this.getDevicesSensorStatus();
     statusBool = ['online'].includes(status);
 
@@ -313,14 +311,15 @@ MyGardenaSmart.prototype = {
         .on('get', this.getSerialNumberCharacteristic.bind(this));;
     this.services.push(informationService);
 
-    //Accessory.log = this.log;
-    //this.loggingService = new FakeGatoHistoryService("weather", Accessory);
     this.fakeGatoHistoryService = new FakeGatoHistoryService("room", this, { storage: 'fs' });
     this.services.push(this.fakeGatoHistoryService)
 
     /* Battery Service */
 
-    let batteryService = new Service.BatteryService();
+    let batteryService = new Service.BatteryService("Battery");
+    batteryService
+      .setCharacteristic(Characteristic.ChargingState, 
+                        Characteristic.ChargingState.NOT_CHARGEABLE);
     batteryService
       .getCharacteristic(Characteristic.BatteryLevel)
       .on('get', this.getBatteryLevelCharacteristic.bind(this));
@@ -349,7 +348,7 @@ MyGardenaSmart.prototype = {
 
      /* Light Service */
     
-    let lightService = new Service.LightSensor('Light');
+    let lightService = new Service.LightSensor('Ambient Light');
     lightService
       .getCharacteristic(Characteristic.CurrentAmbientLightLevel)
       .setProps({
