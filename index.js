@@ -25,15 +25,11 @@ function MyGardenaSmart(log, config) {
   this.updateInterval = config['updateInterval']
   this.serialNumberInfo = null;
   this.batteryLevel = null;
-  //this.mowingDurationSeconds = config['mowingDurationSeconds'] || 10800;
   
   this.user_id = null;
   this.locationId = null;
   this.devices = this.updateDevices();;
   this.lastupdate = Date.now();
-
-  // this.getUserId();
-  this.getLocationsLocationId();
 }
 
 MyGardenaSmart.prototype = {
