@@ -38,7 +38,7 @@ function MyGardenaSmart(log, config) {
 
 MyGardenaSmart.prototype = {
 
-
+//
 
   getToken: function () {
     const me = this;
@@ -97,7 +97,7 @@ MyGardenaSmart.prototype = {
       const token = await this.getToken();
       const user_id = token.user_id;
       this.user_id = user_id;
-      this.log('getUserId', {user_id});
+      //this.log('getUserId', {user_id});
     }
 
     return this.user_id;
@@ -129,7 +129,7 @@ MyGardenaSmart.prototype = {
       'GET',
       API_URI + 'locations',
       {
-        locationId: null,
+        //locationId: null,
         user_id: user_id,
       }
     );
@@ -259,11 +259,11 @@ MyGardenaSmart.prototype = {
 
   getDevicesSensorStatusCharacteristic: async function (next) {
     next(null, 1);
-    const status = await this.getDevicesSensorStatus();
+    /*const status = await this.getDevicesSensorStatus();
     statusBool = ['online'].includes(status);
 
     const sensorStatus = statusBool ? 1 : 0;
-    next(null, sensorStatus);
+    next(null, sensorStatus);*/
   },
 
   getBatteryLevelCharacteristic: async function (next) {
