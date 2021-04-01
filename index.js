@@ -133,31 +133,31 @@ MyGardenaSmart.prototype = {
 
  
   getDevicesSensorStatus: async function () {
-    const query = 'devices[category=sensor].abilities[type=device_info][properties][name=connection_status].value';
+    const query = 'devices[category=sensor2].abilities[type=device_info][properties][name=connection_status].value';
     return await this.queryDevices(query);
   },
 
 
   getDevicesSensorHumidity: async function () {
-    const query = 'devices[category=sensor].abilities[type=soil_humidity_sensor][properties][name=humidity].value';
+    const query = 'devices[category=sensor2].abilities[type=soil_humidity_sensor][properties][name=humidity].value';
     return await this.queryDevices(query);
   },
 
-  getDevicesSensorLight: async function () {
-    const query = 'devices[category=sensor].abilities[type=light_sensor][properties][name=light].value';
-    return await this.queryDevices(query);
-  },
+//  getDevicesSensorLight: async function () {
+//    const query = 'devices[category=sensor].abilities[type=light_sensor][properties][name=light].value';
+//    return await this.queryDevices(query);
+//  },
 
 
   getDevicesSensorTemperature: async function () {
-    const query = 'devices[category=sensor].abilities[type=soil_temperature_sensor][properties][name=temperature].value';
+    const query = 'devices[category=sensor2].abilities[type=soil_temperature_sensor][properties][name=temperature].value';
     return await this.queryDevices(query);
   },
 
 
   getDevicesBatteryLevel: async function () {
     if (this.batteryLevel == null) {
-      const query = 'devices[category=sensor].abilities[type=battery_power].properties[name=level].value';
+      const query = 'devices[category=sensor2].abilities[type=battery_power].properties[name=level].value';
       this.batteryLevel = await this.queryDevices(query);
     }
     return this.batteryLevel;
@@ -165,7 +165,7 @@ MyGardenaSmart.prototype = {
 
   getSerialNumber: async function () {
     if (this.serialNumber == null) {
-      const query = 'devices[category=sensor].abilities[type=device_info].properties[name=serial_number].value';
+      const query = 'devices[category=sensor2].abilities[type=device_info].properties[name=serial_number].value';
       const serial = await this.queryDevices(query);
       this.serialNumber = serial;
       return serial;
@@ -173,13 +173,15 @@ MyGardenaSmart.prototype = {
     return this.serialNumber;
   },
 
+  // general helper method to query json
   queryDevices: async function (query) {
     const data = await this.getDevices();
     const result = jq(query, {data});
-    //this.log('queryDevices', {data, query, result});
+
     return result ? result.value : null;
   },
 
+  // update devices from API
   updateDevices: async function () {
     const locationId = await this.getLocationsLocationId();
     this.devices = await this.callApi(
@@ -236,17 +238,16 @@ MyGardenaSmart.prototype = {
   updateSensorData: async function () {
     const value = await this.getDevicesSensorHumidity();
     const temperature = await this.getDevicesSensorTemperature();
-    const light = await this.getDevicesSensorLight();
+    //const light = await this.getDevicesSensorLight();
 
     this.fakeGatoHistoryService.addEntry({
                 time: new Date().getTime() / 1000,
                 temp: temperature,
-                ppm: light,
                 humidity: value
     });
   
 
-    this.log('Update sensor data. Humidtiy: ', value + "; temperature: " + temperature + "; light: " + light);
+    this.log('Update sensor data. Humidtiy: ', value + "; temperature: " + temperature );
     // repeat this every 10 minutes
     timeout = setTimeout(this.updateSensorData.bind(this), 10 * 60 * 1000);
 
@@ -286,11 +287,11 @@ MyGardenaSmart.prototype = {
     next(null, value);
   },
 
-  getSensorLightCharacteristic: async function (next) {
-  const value = await this.getDevicesSensorLight();
+  //getSensorLightCharacteristic: async function (next) {
+  //const value = await this.getDevicesSensorLight();
     //this.log('getSensorLightCharacteristic', {value});
-    next(null, value);
-  },
+  //  next(null, value);
+  //},
 
 
 
@@ -342,7 +343,7 @@ MyGardenaSmart.prototype = {
 
     this.services.push(temperatureService);
 
-     /* Light Service */
+     /* Light Service 
     
     let lightService = new Service.LightSensor('Ambient Light');
     lightService
@@ -352,11 +353,9 @@ MyGardenaSmart.prototype = {
                     maxValue: 100000
                 })
       .on("get", this.getSensorLightCharacteristic.bind(this));
-
-
-
+    
     this.services.push(lightService);
-
+    */
 
 
 
